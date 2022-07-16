@@ -1,0 +1,31 @@
+@use '../variables.scss';
+
+.hexagon {
+    width: var(--s);
+    margin: var(--m);
+    height: calc(var(--s) * 0.9);
+    display: inline-block;
+    font-size: initial; 
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    margin-bottom: calc(var(--m) - var(--s) * 0.45); 
+    margin-left: calc(var(--s)/2);
+    margin-right: calc(var(--s)/18);
+
+    background-color: variables.$hexagonBackgroundColor;
+
+    text-align: center;
+    line-height:  calc(var(--s) * 0.9);
+    overflow: hidden;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: variables.$hexagonFontColor;
+    text-shadow: variables.$hexagonTextShadow;
+
+    span {
+        font-weight: normal;
+        font-size: 1rem;
+        white-space: pre-line;
+        margin-right: 10px;
+    }
+}

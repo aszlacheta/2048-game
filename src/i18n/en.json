@@ -1,0 +1,9 @@
+{
+    "gameStatus": {
+        "label": "Game status: ",
+        "status": {
+            "playing": "playing",
+            "gameOver": "game over"
+        }
+    }
+}
