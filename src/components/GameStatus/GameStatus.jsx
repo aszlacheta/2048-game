@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 export const GAME_STATUS = {
     playing: 'playing',
-    gameOver: 'gameOver',
+    gameOver: 'game-over',
 };
 
 export default function GameStatus({ status }) {
@@ -10,6 +10,6 @@ export default function GameStatus({ status }) {
 
     return (<div>
         <span>{t("gameStatus.label")}</span>
-        {status && <span>{t(`gameStatus.status.${status}`)}</span>}
+        {status && <span data-status={status}>{t(`gameStatus.status.${status}`)}</span>}
     </div>)
 }

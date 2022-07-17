@@ -3,7 +3,7 @@
         "label": "Game status: ",
         "status": {
             "playing": "playing",
-            "gameOver": "game over"
+            "game-over": "game over"
         }
     }
 }

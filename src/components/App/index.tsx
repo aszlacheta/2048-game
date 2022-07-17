@@ -3,5 +3,9 @@ import Board from "../Board/Board";
 import './App.scss';
 
 export const App: React.FC = () => {
-  return (<div className="App"><Board /></div>)
+  return (
+    <div className="App">
+      <Board />
+    </div>
+  )
 }
