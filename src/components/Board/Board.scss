@@ -1,11 +1,11 @@
 .board {
-    font-size: 0; /* disable white space between inline block element */
+    font-size: 0; 
     width: calc(var(--s) * 3.2);
     min-width: calc(var(--s) * 3.2);
     height: calc(var(--s) * 3);
-    --s: 170px; /* size  */
-    --m: 1px; /* margin */
-    --f: calc(var(--s) * 1.1 + 4 * var(--m) - 1px);
+    --s: 170px; // size 
+    --m: 1px; // margin
+    --f: calc(var(--s) * 1.1 + 4 * var(--m) - 1px); // used to shift some cells from the left
 }
 
 .board::before {

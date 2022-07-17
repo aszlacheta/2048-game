@@ -1,72 +1,99 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCells } from "../../api";
 import Hexagon from "../Hexagon/Hexagon";
 import * as R from 'ramda';
 import useKeyUp from "../../hooks/useKeyUp";
-import GameStatus, { GAME_STATUS } from "../GameStatus/GameStatus";
-import useQueryParams from "../../hooks/useGameQueryParams";
+import GameStatus from "../GameStatus/GameStatus";
+import useGamePossibleMoves from "../../hooks/useGamePossibleMoves";
 
 import './Board.scss';
+import useShiftFactory from "../../hooks/useShiftFactory";
+import PossibleMoves from "../PossibleMoves/PossibleMoves";
 
-export default function Board() {
+/**
+ * Component responsible for rendering whole board
+ * 
+ * @param {
+ *  {
+ *      hostname: string | undefined; 
+ *      port: string | undefined; 
+ *      radius: string | undefined; 
+ *      protocol: string | undefined;
+ *      defaults: Object;
+ *  }} props React props that define:
+ *          1) connection to the API (hostname, port, protocol) 
+ *          2) radius as level of the game
+ *          3) defaults - contains level of the game and initial board
+ * @returns {ReactElement} board with hexagons
+ */
+export default function Board({ hostname, protocol, radius, port, defaults }) {
 
-    const EMPTY_BOARD = [
-        { x: 0, y: 1, z: -1, value: 0 },
-        { x: -1, y: 1, z: 0, value: 0 },
-        { x: 1, y: 0, z: -1, value: 0 },
-        { x: 0, y: 0, z: 0, value: 0 },
-        { x: -1, y: 0, z: 1, value: 0 },
-        { x: 1, y: -1, z: 0, value: 0 },
-        { x: 0, y: -1, z: 1, value: 0 },
-    ];
-
-    const [cells, setCells] = useState(EMPTY_BOARD);
-    const [status, setStatus] = useState(GAME_STATUS.gameOver);
-    const [possibleMoves, setPossibleMoves] = useState(0);
-    const {hostname, port, radius, protocol} = useQueryParams();
+    const [cells, setCells] = useState(defaults.board);
+    const shiftNorth = useShiftFactory('x');
+    const shiftNorthWest = useShiftFactory('z');
+    const shiftNorthEast = useShiftFactory('y');
+    const shiftSouth = useShiftFactory('x', true);
+    const shiftSouthWest = useShiftFactory('y', true);
+    const shiftSouthEast = useShiftFactory('z', true);
+    const { possibleMovesNumber, hasMoreMoves } = useGamePossibleMoves(cells, { shiftNorth, shiftNorthEast, shiftNorthWest, shiftSouth, shiftSouthEast, shiftSouthWest });
 
     useEffect(() => {
         clearBoard();
-        addNewCells();
-        // eslint-disable-next-line
-    }, [])
+        loadNewCells();
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const addNewCells = () => {
-        getCells(getExistingCells(cells), radius, hostname, port, protocol).then(({ data }) => {
-            update(data);
-        });
-    }
+    useKeyUp('w', () => shiftAndLoadNew(() => shiftNorth(cells), cells));
+    useKeyUp('s', () => shiftAndLoadNew(() => shiftSouth(cells), cells));
+    useKeyUp('q', () => shiftAndLoadNew(() => shiftNorthWest(cells), cells));
+    useKeyUp('a', () => shiftAndLoadNew(() => shiftSouthWest(cells), cells));
+    useKeyUp('e', () => shiftAndLoadNew(() => shiftNorthEast(cells), cells));
+    useKeyUp('d', () => shiftAndLoadNew(() => shiftSouthEast(cells), cells));
 
-    useEffect(useKeyUp('w', () => shiftAndUpdate(() => shiftNorth(cells), cells)), [cells, status]);
-    useEffect(useKeyUp('s', () => shiftAndUpdate(() => shiftSouth(cells), cells)), [cells, status]);
-    useEffect(useKeyUp('q', () => shiftAndUpdate(() => shiftNorthWest(cells), cells)), [cells, status]);
-    useEffect(useKeyUp('a', () => shiftAndUpdate(() => shiftSouthWest(cells), cells)), [cells, status]);
-    useEffect(useKeyUp('e', () => shiftAndUpdate(() => shiftNorthEast(cells), cells)), [cells, status]);
-    useEffect(useKeyUp('d', () => shiftAndUpdate(() => shiftSouthEast(cells), cells)), [cells, status]);
-
-    useEffect(() => {
-        const status = checkStatus(cells);
-        setStatus(status);
-    }, [cells]);
-
-    const getExistingCells = (cells) => cells.filter(cell => cell.value !== 0) || [];
-
+    /**
+     * Clears the board by reload with default, initial values
+     */
     const clearBoard = () => {
-        setCells(EMPTY_BOARD);
+        setCells(defaults.board);
     }
 
-    const shiftAndUpdate = (callback, cells = []) => {
-        const copy = R.clone(cells);
-        const data = callback();
+    /**
+     * Loads new cells from API
+     */
+    const loadNewCells = () => {
+        getCells(getNonEmptyCells(cells), radius, hostname, port, protocol)
+            .then(({ data }) => updateValuesFromApi(data));
+    }
 
-        if (status === GAME_STATUS.playing) {
+    /**
+     * Responsible for returning list of non-empty cells - cells that have value greater than 0
+     * @param {Array<Object>} cells list of cells
+     * @returns {Array<Object>} list of cells with value greater than 0
+     */
+    const getNonEmptyCells = (cells) => R.reject(R.propEq('value', 0))(cells) || [];
+
+    /**
+     * Used to shift data based on given move (i.e. move to north) 
+     * and load new cells if game is not over 
+     * as well as when there where some changes on the board made by last move made
+     * @param {Function} shiftCallback move represented by shift function
+     * @param {Array<Object>} cells list of cells
+     */
+    const shiftAndLoadNew = (shiftCallback, cells = []) => {
+        const copy = R.clone(cells);
+        const data = shiftCallback();
+
+        if (hasMoreMoves) {
             if (!R.compose(R.isEmpty, R.difference)(data, copy)) {
-                addNewCells();
+                loadNewCells();
             }
         }
     }
 
-    const update = (data) => {
+    /**
+     * Method used to update given model with the values from the API
+     * @param {Array<Object>} data list of cells to add to the view
+     */
+    const updateValuesFromApi = (data) => {
         const copy = R.clone(cells);
 
         data.forEach(({ x, y, z, value }) => {
@@ -79,170 +106,12 @@ export default function Board() {
         });
 
         setCells(copy);
-
-        return copy;
-    }
-
-    const shiftNorth = (cells) => {
-        const groupByX = R.groupBy(cell => cell?.x);
-        const groupedByX = groupByX(cells);
-
-        shift(groupedByX);
-
-        return Object.values(groupedByX).flat();
-    }
-
-    const shiftSouth = (cells) => {
-        const groupByX = R.groupBy(cell => cell?.x);
-        const groupedByX = groupByX(cells);
-
-        reverseArraysInObjects(groupedByX);
-        shift(groupedByX);
-        reverseArraysInObjects(groupedByX);
-
-        return Object.values(groupedByX).flat();
-    }
-
-    const shiftNorthWest = (cells) => {
-        const groupByZ = R.groupBy(cell => cell?.z);
-        const groupedByZ = groupByZ(cells);
-
-        shift(groupedByZ);
-
-        return Object.values(groupedByZ).flat();
-    }
-
-    const shiftSouthWest = (cells) => {
-        const groupByY = R.groupBy(cell => cell?.y);
-        const groupedByY = groupByY(cells);
-
-        reverseArraysInObjects(groupedByY);
-        shift(groupedByY);
-        reverseArraysInObjects(groupedByY);
-
-        return Object.values(groupedByY).flat();
-    }
-
-    const shiftNorthEast = (cells) => {
-        const groupByY = R.groupBy(cell => cell?.y);
-        const groupedByY = groupByY(cells);
-
-        shift(groupedByY);
-
-        return Object.values(groupedByY).flat();
-    }
-
-    const shiftSouthEast = (cells) => {
-        const groupByZ = R.groupBy(cell => cell?.z);
-        const groupedByZ = groupByZ(cells);
-
-        reverseArraysInObjects(groupedByZ);
-        shift(groupedByZ);
-        reverseArraysInObjects(groupedByZ);
-
-        return Object.values(groupedByZ).flat();
-    }
-
-    const shift = (groupedBy) => {
-        Object.keys(groupedBy).forEach(x => {
-            let rowByX = groupedBy[x];
-
-            // filter zeros
-            rowByX = filterZero(rowByX);
-
-            // merge
-            rowByX.forEach((cell, index) => {
-                if (index + 1 < rowByX.length && cell.value === rowByX[index + 1].value) {
-                    rowByX[index].value = 2 * cell.value;
-                    rowByX[index + 1].value = 0;
-                }
-            });
-
-            // filter zeros again
-            rowByX = filterZero(rowByX);
-
-            // update values
-            groupedBy[x].forEach((cell, index) => {
-                groupedBy[x][index].value = rowByX[index]?.value || 0;
-            })
-        })
-
-        return groupedBy;
-    }
-
-    const filterZero = (array) => array.filter(cell => cell?.value !== 0);
-
-    const reverseArraysInObjects = (array) => {
-        Object.keys(array).forEach(x => {
-            array[x].reverse();
-        });
-        return array;
-    }
-
-    const checkStatus = (cells) => {
-        //TODO
-        let shallowCopyCells = R.clone(cells);
-        let possibleMoves = 0;
-
-        let data = shiftNorth(shallowCopyCells);
-        let a = R.difference(cells, data);
-        if (a?.length > 0) {
-            possibleMoves++;
-        }
-
-        shallowCopyCells = R.clone(cells);
-        data = shiftNorthEast(shallowCopyCells);
-        a = R.difference(cells, data);
-        if (a.length > 0) {
-            possibleMoves++;
-        }
-
-
-        shallowCopyCells = R.clone(cells);
-        data = shiftNorthWest(shallowCopyCells);
-        a = R.difference(cells, data);
-        if (a.length > 0) {
-            possibleMoves++;
-        }
-
-
-        shallowCopyCells = R.clone(cells);
-        data = shiftSouth(shallowCopyCells);
-        a = R.difference(cells, data);
-        if (a.length > 0) {
-            possibleMoves++;
-        }
-
-
-        shallowCopyCells = R.clone(cells);
-        data = shiftSouthEast(shallowCopyCells);
-        a = R.difference(cells, data);
-        if (a.length > 0) {
-            possibleMoves++;
-        }
-
-
-        shallowCopyCells = R.clone(cells);
-        data = shiftSouthWest(shallowCopyCells);
-        a = R.difference(cells, data);
-        if (a.length > 0) {
-            possibleMoves++;
-        }
-
-        if (possibleMoves > 0) {
-            setPossibleMoves(possibleMoves);
-            return GAME_STATUS.playing;
-        } else
-
-            setPossibleMoves(0);
-        return GAME_STATUS.gameOver;
     }
 
     return (
         <div className="container">
-
-            <GameStatus status={status} />
-            <div>Possible moves {possibleMoves}</div>
+            <GameStatus hasMoreMoves={hasMoreMoves} />
+            <PossibleMoves number={possibleMovesNumber} />
 
             <div className="board">
                 {cells.map((cell, index) =>

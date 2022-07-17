@@ -4,6 +4,10 @@
         "status": {
             "playing": "playing",
             "game-over": "game over"
+
         }
+    },
+    "possibleMoves": {
+        "label": "Possible moves: {{number}}"
     }
 }

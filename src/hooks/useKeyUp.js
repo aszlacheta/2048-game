@@ -1,9 +1,11 @@
+import { useEffect } from "react";
+
 /**
  * Custom hook to safely react on key up event.
  * Will be deleted once the view it is attached to, is removed from DOM.
  * @param {String} targetedKey 
  * @param {Function} callback 
- * @returns 
+ * @returns {null}
  */
 export default function useKeyUp(targetedKey, callback) {
 
@@ -15,10 +17,10 @@ export default function useKeyUp(targetedKey, callback) {
         }
     };
 
-    return () => {
+    useEffect(() => {
         window.addEventListener(EVENT_LISTENER_KEY, upHandler);
         return () => {
             window.removeEventListener(EVENT_LISTENER_KEY, upHandler);
         };
-    }
+    }); 
 }
