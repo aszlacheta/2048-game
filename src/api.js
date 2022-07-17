@@ -1,7 +1,18 @@
 import axios from "axios";
 
-const BACKEND_URL = 'http://localhost:13337'
+const DEFAULTS = {
+    port: '80',
+    backendUrl: 'localhost',
+    level: 2,
+    protocol: 'http',
+}
 
-export function getCells(cells = []) {
-    return axios.post(`${BACKEND_URL}/2`, cells)
+export function getCells(
+    cells = [],
+    level = DEFAULTS.level,
+    backendUrl = DEFAULTS.backendUrl,
+    port = DEFAULTS.port,
+    protocol = DEFAULTS.protocol) {
+        debugger
+    return axios.post(`${protocol}://${backendUrl}:${port}/${level}`, cells)
 }

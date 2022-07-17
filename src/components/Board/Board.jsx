@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { getCells } from "../../api";
 import Hexagon from "../Hexagon/Hexagon";
 import * as R from 'ramda';
-
-import './Board.scss';
 import useKeyUp from "../../hooks/useKeyUp";
 import GameStatus, { GAME_STATUS } from "../GameStatus/GameStatus";
+import useQueryParams from "../../hooks/useGameQueryParams";
+
+import './Board.scss';
 
 export default function Board() {
 
@@ -22,6 +23,7 @@ export default function Board() {
     const [cells, setCells] = useState(EMPTY_BOARD);
     const [status, setStatus] = useState(GAME_STATUS.gameOver);
     const [possibleMoves, setPossibleMoves] = useState(0);
+    const {hostname, port, radius, protocol} = useQueryParams();
 
     useEffect(() => {
         clearBoard();
@@ -30,17 +32,17 @@ export default function Board() {
     }, [])
 
     const addNewCells = () => {
-        getCells(getExistingCells(cells)).then(({ data }) => {
+        getCells(getExistingCells(cells), radius, hostname, port, protocol).then(({ data }) => {
             update(data);
         });
     }
 
-    useEffect(useKeyUp('w', () => shiftAndUpdate(() => shiftNorth(cells))), [cells, status]);
-    useEffect(useKeyUp('s', () => shiftAndUpdate(() => shiftSouth(cells))), [cells, status]);
-    useEffect(useKeyUp('q', () => shiftAndUpdate(() => shiftNorthWest(cells))), [cells, status]);
-    useEffect(useKeyUp('a', () => shiftAndUpdate(() => shiftSouthWest(cells))), [cells, status]);
-    useEffect(useKeyUp('e', () => shiftAndUpdate(() => shiftNorthEast(cells))), [cells, status]);
-    useEffect(useKeyUp('d', () => shiftAndUpdate(() => shiftSouthEast(cells))), [cells, status]);
+    useEffect(useKeyUp('w', () => shiftAndUpdate(() => shiftNorth(cells), cells)), [cells, status]);
+    useEffect(useKeyUp('s', () => shiftAndUpdate(() => shiftSouth(cells), cells)), [cells, status]);
+    useEffect(useKeyUp('q', () => shiftAndUpdate(() => shiftNorthWest(cells), cells)), [cells, status]);
+    useEffect(useKeyUp('a', () => shiftAndUpdate(() => shiftSouthWest(cells), cells)), [cells, status]);
+    useEffect(useKeyUp('e', () => shiftAndUpdate(() => shiftNorthEast(cells), cells)), [cells, status]);
+    useEffect(useKeyUp('d', () => shiftAndUpdate(() => shiftSouthEast(cells), cells)), [cells, status]);
 
     useEffect(() => {
         const status = checkStatus(cells);
@@ -53,32 +55,32 @@ export default function Board() {
         setCells(EMPTY_BOARD);
     }
 
-    const shiftAndUpdate = (callback) => {
+    const shiftAndUpdate = (callback, cells = []) => {
+        const copy = R.clone(cells);
         const data = callback();
 
         if (status === GAME_STATUS.playing) {
-            update(data);
-            addNewCells();
+            if (!R.compose(R.isEmpty, R.difference)(data, copy)) {
+                addNewCells();
+            }
         }
     }
 
-    const update = (data, updateData = true) => {
-        const shallowCopyCells = [...cells];
+    const update = (data) => {
+        const copy = R.clone(cells);
 
         data.forEach(({ x, y, z, value }) => {
             const pred = R.whereEq({ x, y, z })
             const index = R.findIndex(pred)(cells);
 
             if (index >= 0) {
-                shallowCopyCells[index] = { x, y, z, value };
+                copy[index] = { x, y, z, value };
             }
         });
 
-        if (updateData) {
-            setCells(shallowCopyCells);
-        }
+        setCells(copy);
 
-        return shallowCopyCells;
+        return copy;
     }
 
     const shiftNorth = (cells) => {
@@ -232,8 +234,8 @@ export default function Board() {
             return GAME_STATUS.playing;
         } else
 
-        setPossibleMoves(0);
-            return GAME_STATUS.gameOver;
+            setPossibleMoves(0);
+        return GAME_STATUS.gameOver;
     }
 
     return (
