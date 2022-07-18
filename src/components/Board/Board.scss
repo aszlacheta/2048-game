@@ -25,8 +25,8 @@
             width: calc(var(--s) / 1.25 - var(--ms) * var(--m));
             float: left;
             height: 150%;
-            // background: repeating-linear-gradient(#000 0 10px, #0000 0 var(--f));
-            shape-outside: repeating-linear-gradient(#000 0 10px, #0000 0 var(--f));
+            // background: repeating-linear-gradient(#000 0 10px, #0000 15px var(--f));
+            shape-outside: repeating-linear-gradient(#000 0 10px, #0000 15px var(--f));
         }
 
         &[data-level="2"] {
