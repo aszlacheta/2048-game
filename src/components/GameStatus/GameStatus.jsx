@@ -8,9 +8,9 @@ import "./GameStatus.scss";
  *          1) hasMoreMoves - determines if user has more moves, true if there are possible moves; false otherwise 
  * @returns {ReactElement}
  */
-export default function GameStatus({ hasMoreMoves }) {
+export default function GameStatus({ hasMoreMoves, isWinner }) {
     const { t } = useTranslation();
-    const status = useGameStatus(hasMoreMoves);
+    const status = useGameStatus(hasMoreMoves, isWinner);
 
     return (<div className="game-status">
         <span>{t("gameStatus.label")}</span>

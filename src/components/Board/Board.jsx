@@ -7,6 +7,7 @@ import GameStatus from "../GameStatus/GameStatus";
 import useGamePossibleMoves from "../../hooks/useGamePossibleMoves";
 import useShiftFactory from "../../hooks/useShiftFactory";
 import PossibleMoves from "../PossibleMoves/PossibleMoves";
+import useIsWinner from "../../hooks/useIsWinner";
 
 import './Board.scss';
 
@@ -36,6 +37,7 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
     const shiftSouthWest = useShiftFactory('y', true);
     const shiftSouthEast = useShiftFactory('z', true);
     const { possibleMovesNumber, hasMoreMoves } = useGamePossibleMoves(cells, { shiftNorth, shiftNorthEast, shiftNorthWest, shiftSouth, shiftSouthEast, shiftSouthWest });
+    const isWinner = useIsWinner(cells, 2048);
 
     useEffect(() => {
         clearBoard();
@@ -80,11 +82,14 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
      */
     const shiftAndLoadNew = (shiftCallback, cells = []) => {
         const copy = R.clone(cells);
-        const data = shiftCallback();
 
-        if (hasMoreMoves) {
-            if (!R.compose(R.isEmpty, R.difference)(data, copy)) {
-                loadNewCells();
+        if (!isWinner) {
+            const data = shiftCallback();
+
+            if (hasMoreMoves) {
+                if (!R.compose(R.isEmpty, R.difference)(data, copy)) {
+                    loadNewCells();
+                }
             }
         }
     }
@@ -111,8 +116,8 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
     return (
         <div className="container">
             <div className="statuses">
-                <GameStatus hasMoreMoves={hasMoreMoves} />
-                <PossibleMoves number={possibleMovesNumber} maxMoves={6}/>
+                <GameStatus hasMoreMoves={hasMoreMoves} isWinner={isWinner} />
+                <PossibleMoves number={possibleMovesNumber} maxMoves={6} />
             </div>
 
             <div className="board" data-level={radius}>

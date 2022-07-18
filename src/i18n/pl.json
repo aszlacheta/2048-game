@@ -3,7 +3,8 @@
         "label": "Status gry: ",
         "status": {
             "playing": "gra trwa",
-            "game-over": "koniec gry"
+            "game-over": "koniec gry",
+            "win": "zwycięstwo!"
 
         }
     },

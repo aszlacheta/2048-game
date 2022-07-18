@@ -3,15 +3,17 @@ import useGameStatus from "../useGameStatus";
 describe('useGameStatus hook', () => {
 
     const testCases = [
-        [true, 'playing'],
-        [false, 'game-over'],
-        ['a', 'game-over'],
-        [-1, 'game-over'],
-        [undefined, 'game-over'],
-        [null, 'game-over'],
+        [true, false, 'playing'],
+        [false, false, 'game-over'],
+        ['a', false, 'game-over'],
+        [-1, false, 'game-over'],
+        [undefined, false, 'game-over'],
+        [null, false, 'game-over'],
+        [true, true, 'win'],
+
     ]
-    test.each(testCases)('should return proper status', (hasMoreMoves, expected) => {
-        const result = useGameStatus(hasMoreMoves);
+    test.each(testCases)('should return proper status', (hasMoreMoves, isWinner, expected) => {
+        const result = useGameStatus(hasMoreMoves, isWinner);
         expect(result).toEqual(expected);
     });
 
