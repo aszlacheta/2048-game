@@ -1,24 +1,21 @@
-@use '../variables.scss';
+@use "../variables.scss";
 
 .hexagon {
     width: var(--s);
     margin: var(--m);
     height: calc(var(--s) * 0.9);
     display: inline-block;
-    font-size: initial; 
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0 50%);
-    margin-bottom: calc(var(--m) - var(--s) * 0.45); 
-    margin-left: calc(var(--s)/2);
-    margin-right: calc(var(--s)/18);
+    margin-bottom: calc(var(--m) - var(--s) * 0.45);
 
     background-color: variables.$hexagonBackgroundColor;
 
     text-align: center;
-    line-height:  calc(var(--s) * 0.9);
+    line-height: calc(var(--s) * 0.9);
     overflow: hidden;
     font-size: 3rem;
     font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: variables.$hexagonFontColor;
     text-shadow: variables.$hexagonTextShadow;
 
@@ -27,5 +24,52 @@
         font-size: 1rem;
         white-space: pre-line;
         margin-right: 10px;
+    }
+
+    &:not([data-value="2"]) {
+        color: variables.$hexagonBackgroundColor;
+        text-shadow: none;
+    }
+
+    &[data-value="4"] {
+        background: linear-gradient(180deg, #01e6ff, #00d8ff, #00c9ff, #00b9fd, #00a9f8, #1799f0, #4387e4, #5d75d5);
+    }
+
+    &[data-value="8"] {
+        background: linear-gradient(180deg, #2dabff, #0096f4, #0081e7, #006cda, #0056ca, #0040ba, #0028a7, #070793);
+    }
+
+    &[data-value="16"] {
+        background: linear-gradient(180deg, #ffb56b, #fc9763, #f57864, #e9596a, #d53c74, #ba237f, #95188a, #631d93);
+    }
+
+    &[data-value="32"] {
+        background: linear-gradient(180deg, #ff16ff, #f500e0, #e900c3, #db00a9, #ca0090, #b90079, #a60065, #930053);
+    }
+
+    &[data-value="64"] {
+        background: linear-gradient(180deg, #ffcc00, #f1b308, #e19c10, #d08515, #bd7018, #a85c19, #924918, #7c3816);
+    }
+
+    &[data-value="128"] {
+        background: linear-gradient(180deg, #e5ff00, #cbf606, #b1ed10, #97e419, #7cda20, #60d027, #40c52d, #00bb32);
+    }
+
+    &[data-value="256"] {
+        background: linear-gradient(180deg, #00ff66, #00f880, #00f095, #00e8a6, #00dfb3, #00d5bc, #00cbc1, #00c1c1);
+    }
+
+    &[data-value="512"] {
+        background: linear-gradient(180deg, #ff00b3, #e720bc, #cd30c4, #b23bc8, #9443ca, #7348ca, #4c4cc7, #004dc1);
+    }
+
+    &[data-value="1024"] {
+        letter-spacing: -0.4rem;
+        background: linear-gradient(180deg, #eeff06, #82f850, #00e887, #00d4b8, #00bbdc, #00a0eb, #0082e1, #0060c1);
+    }
+
+    &[data-value="2048"] {
+        letter-spacing: -0.4rem;
+        background: linear-gradient(180deg, #ffee00, #ffd400, #ffb900, #ff9e00, #fb8200, #f56400, #ed4100, #e20000);
     }
 }

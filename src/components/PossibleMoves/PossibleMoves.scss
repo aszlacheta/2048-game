@@ -1,0 +1,32 @@
+.possible-moves {
+    display: flex;
+}
+
+.possible-moves-progress {
+    position: relative;
+    height: 30px;
+    width: 80%;
+    background: linear-gradient(180deg, #000000, #0e0e0e, #171717, #1f1f1f, #272727, #303030, #383838, #414141);
+    border-radius: 15px;
+
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(var(--width) * 100%);
+        height: 100%;
+        background: linear-gradient(180deg, #ffd500, #ffcb12, #ffc11f, #ffb728, #ffae31, #ffa538, #ff9c3f, #fb9445);
+        border-radius: 14px;
+    }
+}
+
+.possible-moves-number {
+    width: 30px;
+    height: 30px;
+    margin-right: 0.5rem;
+    background: linear-gradient(180deg, #ffd500, #ffcb12, #ffc11f, #ffb728, #ffae31, #ffa538, #ff9c3f, #fb9445);
+    border-radius: 15px;
+    text-align: center;
+    line-height: 28px;
+}

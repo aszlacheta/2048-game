@@ -110,10 +110,12 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
 
     return (
         <div className="container">
-            <GameStatus hasMoreMoves={hasMoreMoves} />
-            <PossibleMoves number={possibleMovesNumber} />
+            <div className="statuses">
+                <GameStatus hasMoreMoves={hasMoreMoves} />
+                <PossibleMoves number={possibleMovesNumber} maxMoves={6}/>
+            </div>
 
-            <div className="board">
+            <div className="board" data-level={radius}>
                 {cells.map((cell, index) =>
                     <Hexagon
                         key={index}

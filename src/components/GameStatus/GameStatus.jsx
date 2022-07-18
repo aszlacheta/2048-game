@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import useGameStatus from "../../hooks/useGameStatus";
+import "./GameStatus.scss";
 
 /**
  * Component used to represent game status in the board view
@@ -11,7 +12,7 @@ export default function GameStatus({ hasMoreMoves }) {
     const { t } = useTranslation();
     const status = useGameStatus(hasMoreMoves);
 
-    return (<div>
+    return (<div className="game-status">
         <span>{t("gameStatus.label")}</span>
         {status && <span data-status={status}>{t(`gameStatus.status.${status}`)}</span>}
     </div>)
