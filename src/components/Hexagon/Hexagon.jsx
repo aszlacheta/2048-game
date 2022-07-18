@@ -17,7 +17,7 @@ export default function Hexagon({ x, y, z, value }) {
             data-y={y}
             data-z={z}
             data-value={value}>
-            {value}
+            {value || ''}
         </div>
     )
 }
