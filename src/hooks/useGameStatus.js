@@ -11,7 +11,7 @@ export const GAME_STATUS = {
  */
 export default function useGameStatus(hasMoreMoves) {
 
-    if (hasMoreMoves) {
+    if (hasMoreMoves === true) {
         return GAME_STATUS.playing;
     } else {
         return GAME_STATUS.gameOver;

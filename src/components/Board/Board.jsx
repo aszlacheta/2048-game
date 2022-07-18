@@ -5,10 +5,10 @@ import * as R from 'ramda';
 import useKeyUp from "../../hooks/useKeyUp";
 import GameStatus from "../GameStatus/GameStatus";
 import useGamePossibleMoves from "../../hooks/useGamePossibleMoves";
-
-import './Board.scss';
 import useShiftFactory from "../../hooks/useShiftFactory";
 import PossibleMoves from "../PossibleMoves/PossibleMoves";
+
+import './Board.scss';
 
 /**
  * Component responsible for rendering whole board

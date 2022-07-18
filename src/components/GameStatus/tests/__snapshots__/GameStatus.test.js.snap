@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Game status component should render properly with hasMoreMoves equals 0 1`] = `
+<div
+  className="game-status"
+>
+  <span>
+    gameStatus.label
+  </span>
+  <span
+    data-status="game-over"
+  >
+    gameStatus.status.game-over
+  </span>
+</div>
+`;
+
+exports[`Game status component should render properly with hasMoreMoves provided 1`] = `
+<div
+  className="game-status"
+>
+  <span>
+    gameStatus.label
+  </span>
+  <span
+    data-status="playing"
+  >
+    gameStatus.status.playing
+  </span>
+</div>
+`;
+
+exports[`Game status component should render properly with wrong hasMoreMoves 1`] = `
+<div
+  className="game-status"
+>
+  <span>
+    gameStatus.label
+  </span>
+  <span
+    data-status="game-over"
+  >
+    gameStatus.status.game-over
+  </span>
+</div>
+`;
+
+exports[`Game status component should render properly without props 1`] = `
+<div
+  className="game-status"
+>
+  <span>
+    gameStatus.label
+  </span>
+  <span
+    data-status="game-over"
+  >
+    gameStatus.status.game-over
+  </span>
+</div>
+`;
