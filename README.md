@@ -31,3 +31,14 @@ appropriate hexagonal direction.
 |          4 2 2 |     4 4 |
 |        2 4 2 4 | 2 4 2 4 |
 |        2 2 4 4 |     4 8 |
+
+### Levels
+
+2048 game can be run on three different levels:
+* **small** -> radius 2
+* **medium** -> radius 3
+* **large** -> radius 4
+
+Just add **radius** parameter to the URL to play different level!
+
+See [Example](https://aszlacheta.github.io/2048-game?radius=3).
