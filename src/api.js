@@ -2,9 +2,9 @@ import axios from "axios";
 
 const DEFAULTS = {
     port: '13337',
-    backendUrl: 'localhost',
+    backendUrl: 'game2048api.ola-fotografie.pl',
     level: 2,
-    protocol: 'http',
+    protocol: 'https',
 }
 
 /**
