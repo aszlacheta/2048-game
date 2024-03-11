@@ -1,7 +1,7 @@
 # 2048 Game
 
 ## Where to play?
-🌈 [Demo](link) 🌈
+🌈 [Demo](https://aszlacheta.github.io/2048-game/) 🌈
 
 ## How to play?
 
