@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Board component should render properly empty board 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="statuses"
+  >
+    <div
+      className="mocked-game-status"
+    />
+    <div
+      className="mocked-possible-moves"
+    />
+  </div>
+  <div
+    className="board"
+  />
+</div>
+`;
+
+exports[`Board component should render properly non-empty board 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="statuses"
+  >
+    <div
+      className="mocked-game-status"
+    />
+    <div
+      className="mocked-possible-moves"
+    />
+  </div>
+  <div
+    className="board"
+  >
+    <div
+      className="mocked-hexagon"
+    />
+    <div
+      className="mocked-hexagon"
+    />
+    <div
+      className="mocked-hexagon"
+    />
+  </div>
+</div>
+`;

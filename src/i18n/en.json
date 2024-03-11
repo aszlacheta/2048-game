@@ -1,0 +1,14 @@
+{
+    "gameStatus": {
+        "label": "Game status: ",
+        "status": {
+            "playing": "playing",
+            "game-over": "game over",
+            "win": "win!"
+
+        }
+    },
+    "possibleMoves": {
+        "label": "Possible moves: {{number}}"
+    }
+}

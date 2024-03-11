@@ -1,0 +1,14 @@
+{
+    "gameStatus": {
+        "label": "Status gry: ",
+        "status": {
+            "playing": "gra trwa",
+            "game-over": "koniec gry",
+            "win": "zwycięstwo!"
+
+        }
+    },
+    "possibleMoves": {
+        "label": "Dostępne ruchy: {{number}}"
+    }
+}
