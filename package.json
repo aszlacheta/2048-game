@@ -32,10 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-server": "node rng-server/index.js",
-    "test:unit": "react-scripts test",
-    "test:local": "jest --runInBand --config jest.e2e.config.js",
-    "test": "react-scripts build && JEST_PUPPETEER_CONFIG=jest-puppeteer.ci.js jest --runInBand --config jest.e2e.config.js"
+    "start-server": "node rng-server/index.js"
   },
   "eslintConfig": {
     "extends": [
