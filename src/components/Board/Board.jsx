@@ -13,22 +13,21 @@ import './Board.scss';
 
 /**
  * Component responsible for rendering whole board
- * 
+ *
  * @param {
  *  {
- *      hostname: string | undefined; 
- *      port: string | undefined; 
- *      radius: string | undefined; 
+ *      hostname: string | undefined;
+ *      port: string | undefined;
+ *      levelNumber: string | undefined;
  *      protocol: string | undefined;
  *      defaults: Object;
  *  }} props React props that define:
- *          1) connection to the API (hostname, port, protocol) 
- *          2) radius as level of the game
+ *          1) connection to the API (hostname, port, protocol)
+ *          2) levelNumber as level of the game
  *          3) defaults - contains level of the game and initial board
  * @returns {ReactElement} board with hexagons
  */
-export default function Board({ hostname, protocol, radius, port, defaults }) {
-
+export default function Board({ hostname, protocol, levelNumber, port, defaults }) {
     const [cells, setCells] = useState(defaults.board);
     const shiftNorth = useShiftFactory('x');
     const shiftNorthWest = useShiftFactory('z');
@@ -62,8 +61,13 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
      * Loads new cells from API
      */
     const loadNewCells = () => {
-        getCells(getNonEmptyCells(cells), radius, hostname, port, protocol)
-            .then(({ data }) => updateValuesFromApi(data));
+        try {
+            getCells(getNonEmptyCells(cells), levelNumber, hostname, port, protocol)
+                .then(({ data }) => updateValuesFromApi(data));
+        }
+        catch {
+            console.error('API config is invalid or does not response with expected value');
+        }
     }
 
     /**
@@ -74,8 +78,8 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
     const getNonEmptyCells = (cells) => R.reject(R.propEq('value', 0))(cells) || [];
 
     /**
-     * Used to shift data based on given move (i.e. move to north) 
-     * and load new cells if game is not over 
+     * Used to shift data based on given move (i.e. move to north)
+     * and load new cells if game is not over
      * as well as when there where some changes on the board made by last move made
      * @param {Function} shiftCallback move represented by shift function
      * @param {Array<Object>} cells list of cells
@@ -120,7 +124,7 @@ export default function Board({ hostname, protocol, radius, port, defaults }) {
                 <PossibleMoves number={possibleMovesNumber} maxMoves={6} />
             </div>
 
-            <div className="board" data-level={radius}>
+            <div className="board" data-level={levelNumber}>
                 {cells.map((cell, index) =>
                     <Hexagon
                         key={index}

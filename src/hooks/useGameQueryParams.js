@@ -1,6 +1,6 @@
 
 /**
- * Hook used to determine url query paramaters provided by the user
+ * Hook used to determine url query parameters provided by the user
  * @returns {{hostname: string, port: string, radius: string, protocol: string}}
  */
 export default function useGameQueryParams() {
